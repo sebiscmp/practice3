@@ -372,3 +372,35 @@ function makeSumSummaryGraph(names,watts) {
   });
 }
 
+
+
+
+
+function makeLineGraphDailyWatts(names,watts) {
+   const ctx = document.getElementById('chart2');
+   if (summaryChart) destroySummaryChart();
+	
+   summaryChart = new Chart(ctx, {
+	   type: 'line',
+	   data: {
+		labels: names,
+		datasets: [{
+		   label: 'kilowatts for current day',
+		   data: watts,
+		   fill: false,
+		   borderColor: 'rgb(197, 214, 69)',
+		   borderWidth: 0.1
+		}]
+	   },
+	   options: {
+      //indexAxis: 'y',
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
+
