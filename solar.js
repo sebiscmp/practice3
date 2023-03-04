@@ -206,7 +206,7 @@ function displayAllSiteTodayWatts(data){
 		
 		if (whr > 0) {
 			//console.log(MAC,siteMap[MAC],whr);
-			var schoolTHW = processSiteDailyHourlyWatts(site,wattsList,total);
+			var schoolTHW = processSiteDailyHourlyWatts(site,wattsList);
 			totalHwatts = totalHwatts.push(schoolTHW)
 			// total += 1;
 			names.push(siteMap[MAC]);
