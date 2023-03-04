@@ -19,6 +19,7 @@ const QueryErr = '<p style="color:red">ErQuery failed';
 var siteMap = {};  // A global place to store MAC to School name map
 var summaryChart = 0;
 var summaryWhrChart = 0;
+var summaryTWhrChart = 0;
 
 
 // Add an event listener for each item in the pull down menu
@@ -194,14 +195,20 @@ function sumArray(a) {
 function displayAllSiteTodayWatts(data){
 	var names = [];
 	var whrs = [];
+	// var total = 0;
+	var totalHwatts = []
 	//console.log(JSON.stringify(siteMap));
 	data.forEach(function(site) {
 		var MAC = site.shift();
 		var wattsList = site;
 		var whr = sumArray(wattsList);
+		var site = siteMap[MAC]
 		
 		if (whr > 0) {
 			//console.log(MAC,siteMap[MAC],whr);
+			var schoolTHW = processSiteDailyHourlyWatts(site,wattsList,total);
+			totalHwatts = totalHwatts.push(schoolTHW)
+			// total += 1;
 			names.push(siteMap[MAC]);
 			whrs.push(whr);
 		}
@@ -209,6 +216,7 @@ function displayAllSiteTodayWatts(data){
 	});
 	console.log(JSON.stringify(names),JSON.stringify(whrs));
 	makeSumSummaryGraph(names,whrs);
+	makeLineGraphDailyWatts(totalHwatts);
 }
 
 // Process All Site watts by hour for that day
@@ -372,11 +380,39 @@ function makeSumSummaryGraph(names,watts) {
   });
 }
 
+function processSiteDailyHourlyWatts(site,wattsList) {
+	var datalist = {label:site, data:wattsList};
+	return datalist;
+
+// Creates a line graph for the current day's total hourly watts.
+function makeLineGraphDailyWatts(watts) {
+	document.querySelector('#output3').innerHTML += "<h1>Kilowatts for today</h1>";
+	const ctx = document.getElementById('chart3');
+	summaryChart = new Chart(ctx, {
+	  type: 'line',
+	  data: {
+		labels: ["6am", "7am", "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm"],
+		datasets: [{
+		  label: 'Kilowatt hours for today',
+		  data: watts,
+		  borderColor: 'rgb(197, 214, 69)',
+		  borderWidth: 1
+		}]
+	  },
+	  options: {
+		//indexAxis: 'y',
+		scales: {
+		  y: {
+			beginAtZero: true
+		  }
+		}
+	  }
+	});
+  }
 
 
 
-
-function makeLineGraphDailyWatts(names,watts) {
+/*function makeLineGraphDailyWatts(names,watts) {
    const ctx = document.getElementById('chart2');
    if (summaryChart) destroySummaryChart();
 	
@@ -402,5 +438,4 @@ function makeLineGraphDailyWatts(names,watts) {
     }
   });
 }
-
-
+*/
